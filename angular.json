@@ -17,7 +17,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/angular-test-ssr-vercel",
+            "outputPath": "dist/angular-test-ssr-vercel/browser",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -98,6 +98,64 @@
             ],
             "scripts": []
           }
+        },
+        "server": {
+          "builder": "@angular-devkit/build-angular:server",
+          "options": {
+            "outputPath": "dist/angular-test-ssr-vercel/server",
+            "main": "server.ts",
+            "tsConfig": "tsconfig.server.json"
+          },
+          "configurations": {
+            "production": {
+              "outputHashing": "media",
+              "fileReplacements": [
+                {
+                  "replace": "src/environments/environment.ts",
+                  "with": "src/environments/environment.prod.ts"
+                }
+              ]
+            },
+            "development": {
+              "optimization": false,
+              "sourceMap": true,
+              "extractLicenses": false
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve-ssr": {
+          "builder": "@nguniversal/builders:ssr-dev-server",
+          "configurations": {
+            "development": {
+              "browserTarget": "angular-test-ssr-vercel:build:development",
+              "serverTarget": "angular-test-ssr-vercel:server:development"
+            },
+            "production": {
+              "browserTarget": "angular-test-ssr-vercel:build:production",
+              "serverTarget": "angular-test-ssr-vercel:server:production"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "prerender": {
+          "builder": "@nguniversal/builders:prerender",
+          "options": {
+            "routes": [
+              "/"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "angular-test-ssr-vercel:build:production",
+              "serverTarget": "angular-test-ssr-vercel:server:production"
+            },
+            "development": {
+              "browserTarget": "angular-test-ssr-vercel:build:development",
+              "serverTarget": "angular-test-ssr-vercel:server:development"
+            }
+          },
+          "defaultConfiguration": "production"
         }
       }
     }
